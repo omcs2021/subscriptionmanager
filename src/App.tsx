@@ -7,8 +7,8 @@ import Dashboard from './pages/Dashboard';
 import Customers from './pages/Customers';
 import Products from './pages/Products';
 import Categories from './pages/Categories';
-import Subscription from './pages/Subscription';
-import Reminder from './pages/Reminder';
+import Subscriptions from './pages/Subscriptions';
+import Reminders from './pages/Reminders';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -36,8 +36,8 @@ function AppContent() {
           <Route path="customers" element={<Customers />} />
           <Route path="products" element={<Products />} />
           <Route path="categories" element={<Categories />} />
-          <Route path="subscriptions" element={<div className="p-8 text-center text-gray-500">Subscriptions - Coming Soon</div>} />
-          <Route path="reminders" element={<div className="p-8 text-center text-gray-500">Reminders - Coming Soon</div>} />
+          <Route path="subscriptions" element={<Subscriptions />} />
+          <Route path="reminders" element={<Reminders />} />
           <Route path="analytics" element={<div className="p-8 text-center text-gray-500">Analytics - Coming Soon</div>} />
           <Route path="settings" element={<div className="p-8 text-center text-gray-500">Settings - Coming Soon</div>} />
         </Route>

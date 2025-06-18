@@ -240,6 +240,52 @@ export const reminderService = {
     return data as Reminder[];
   },
 
+  async create(reminder: Omit<Reminder, 'id' | 'created_at'>) {
+    const { data, error } = await supabase
+      .from('reminders')
+      .insert([reminder])
+      .select(`
+        *,
+        subscription:subscriptions(
+          *,
+          customer:customers(*),
+          product:products(*)
+        )
+      `)
+      .single();
+    
+    if (error) throw error;
+    return data as Reminder;
+  },
+
+  async update(id: string, reminder: Partial<Reminder>) {
+    const { data, error } = await supabase
+      .from('reminders')
+      .update(reminder)
+      .eq('id', id)
+      .select(`
+        *,
+        subscription:subscriptions(
+          *,
+          customer:customers(*),
+          product:products(*)
+        )
+      `)
+      .single();
+    
+    if (error) throw error;
+    return data as Reminder;
+  },
+
+  async delete(id: string) {
+    const { error } = await supabase
+      .from('reminders')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+  },
+
   async getPending() {
     const { data, error } = await supabase
       .from('reminders')
@@ -267,11 +313,64 @@ export const reminderService = {
         sent_at: new Date().toISOString() 
       })
       .eq('id', id)
-      .select()
+      .select(`
+        *,
+        subscription:subscriptions(
+          *,
+          customer:customers(*),
+          product:products(*)
+        )
+      `)
       .single();
     
     if (error) throw error;
     return data as Reminder;
+  }
+};
+
+// Reminder Settings operations
+export const reminderSettingsService = {
+  async getBySubscriptionId(subscriptionId: string) {
+    const { data, error } = await supabase
+      .from('reminder_settings')
+      .select('*')
+      .eq('subscription_id', subscriptionId)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "not found"
+    return data as ReminderSettings | null;
+  },
+
+  async create(settings: Omit<ReminderSettings, 'id' | 'created_at'>) {
+    const { data, error } = await supabase
+      .from('reminder_settings')
+      .insert([settings])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data as ReminderSettings;
+  },
+
+  async update(id: string, settings: Partial<ReminderSettings>) {
+    const { data, error } = await supabase
+      .from('reminder_settings')
+      .update(settings)
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data as ReminderSettings;
+  },
+
+  async delete(id: string) {
+    const { error } = await supabase
+      .from('reminder_settings')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
   }
 };
 
