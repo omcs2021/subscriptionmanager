@@ -1,1 +1,1 @@
-# subscriptionmanager
+subscription-managerpro
